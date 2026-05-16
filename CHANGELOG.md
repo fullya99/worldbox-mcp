@@ -8,6 +8,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file is maintained automatically by [release-please](https://github.com/googleapis/release-please)
 from Conventional Commits.
 
+## [0.2.0](https://github.com/fullya99/worldbox-mcp/compare/v0.1.1...v0.2.0) (2026-05-16)
+
+
+### Features
+
+* **mod,server:** Add generate_world / save_world / load_world ([2694bc0](https://github.com/fullya99/worldbox-mcp/commit/2694bc0bf57813b204daee5f74fd3bf2a8656fb5))
+* **mod,server:** Batch Phase 2/3 — spawn + paint_tile + 6 read commands ([cae7882](https://github.com/fullya99/worldbox-mcp/commit/cae788255604ea177fd28773a46e6e6d4d6c9633))
+* **mod,server:** Control commands — pause, resume, set_speed ([aa276fc](https://github.com/fullya99/worldbox-mcp/commit/aa276fccd6d35487c34e4492201b6739ea1f3fcf))
+* **mod,server:** Implement discovery primitives (list_tiles/actors/powers) ([a098056](https://github.com/fullya99/worldbox-mcp/commit/a098056bf3136fcb09eb2ec42ac4dd4d90db8fa8))
+* **mod,server:** Invoke_power primitive (universal action via GodPower delegate) ([a47f8e3](https://github.com/fullya99/worldbox-mcp/commit/a47f8e33526557a547d2b21b34b5731219d5de44))
+* **mod:** Scaffold BepInEx C# plugin ([ffb0278](https://github.com/fullya99/worldbox-mcp/commit/ffb02784d03b37fddaa803976aa7bbb5512b695f))
+* **server:** Scaffold Python MCP server with auth-aware bridge client ([76d0c2f](https://github.com/fullya99/worldbox-mcp/commit/76d0c2fd605a1c57adaa1f28e1ab75071eae478d))
+
+
+### Bug Fixes
+
+* **ci:** Bump astral-sh/setup-uv from v4 (nonexistent) to v6 ([46fd1f2](https://github.com/fullya99/worldbox-mcp/commit/46fd1f28eae6f64e0d305106d76e68a4630be129))
+* **ci:** Replace email-obfuscation artifact in pre-commit/action ref ([3544683](https://github.com/fullya99/worldbox-mcp/commit/35446832bb5fda4010531522834161b78b667cc1))
+* **mod:** Inject dispatcher into PlayerLoop instead of MonoBehaviour.Update ([435583f](https://github.com/fullya99/worldbox-mcp/commit/435583f0d27a8b2e5d9a17f40402909d924aed8e))
+* **mod:** List_kingdoms/list_cities + kingdoms_alive/cities_alive counters now report live entries ([98a8a1c](https://github.com/fullya99/worldbox-mcp/commit/98a8a1ccd7f254744698fe6237ea04aee15b5cbe))
+* **mod:** Switch to TcpListener + IPAddress.Loopback, decouple from MonoBehaviour lifecycle ([c75d3b8](https://github.com/fullya99/worldbox-mcp/commit/c75d3b828bf3a860981bf866a813c4aba25ae063))
+
+
+### Documentation
+
+* Claude Code wiring recipe + dense god-mode prompt for live agent test ([b08a6ae](https://github.com/fullya99/worldbox-mcp/commit/b08a6ae7a916fdcb012407b56cffff4318daeb47))
+* **readme:** Rewrite as proper public landing page ([5ee1ca0](https://github.com/fullya99/worldbox-mcp/commit/5ee1ca084f4721b3d15c8435cf8fbe698c55d894))
+* **scenario:** Fix docstring path after move to examples/scenarios/ ([0bc6f0c](https://github.com/fullya99/worldbox-mcp/commit/0bc6f0caa508b3248a06655f3a5dfed9e32a2a83))
+
 ## [0.1.1] — 2026-05-16
 
 ### Fixed

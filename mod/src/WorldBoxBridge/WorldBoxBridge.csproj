@@ -5,7 +5,7 @@
     <AssemblyName>WorldBoxBridge</AssemblyName>
     <RootNamespace>WorldBoxBridge</RootNamespace>
     <!-- This is the SemVer source of truth, kept in sync by release-please. -->
-    <Version>0.1.1</Version>
+    <Version>0.2.0</Version>
     <AssemblyVersion>$(Version).0</AssemblyVersion>
     <FileVersion>$(Version).0</FileVersion>
     <InformationalVersion>$(Version)</InformationalVersion>
@@ -13,10 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BepInEx.Core" />
-    <PackageReference Include="BepInEx.PluginInfoProps" />
-    <PackageReference Include="HarmonyX" />
-    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="BepInEx.Core"/>
+    <PackageReference Include="BepInEx.PluginInfoProps"/>
+    <PackageReference Include="HarmonyX"/>
+    <PackageReference Include="Newtonsoft.Json"/>
   </ItemGroup>
 
   <!-- UnityEngine + Assembly-CSharp resolved from a local WorldBox install (see Directory.Build.props). -->
