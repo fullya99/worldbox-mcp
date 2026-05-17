@@ -8,6 +8,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file is maintained automatically by [release-please](https://github.com/googleapis/release-please)
 from Conventional Commits.
 
+## [0.3.0](https://github.com/fullya99/worldbox-mcp/compare/v0.2.0...v0.3.0) (2026-05-17)
+
+
+### Features
+
+* **mod+server+examples:** Objectives, scoreboard, scenario presets, e2e smoke (Phase 6) ([9d70fa8](https://github.com/fullya99/worldbox-mcp/commit/9d70fa8bec48e07f183df091db37430b5c29443b))
+* **mod+server:** In-memory MessageBus + send/recv tools (Phase 5) ([29ce923](https://github.com/fullya99/worldbox-mcp/commit/29ce9233fb913e6443ded0f532e5f4bcc5288977))
+* **mod+server:** Turn-based opt-in + TurnAdvanceCommand (Phase 4) ([dd3350a](https://github.com/fullya99/worldbox-mcp/commit/dd3350aec6363132f4b8bc5940b0b471b627f261))
+* **mod:** Agents.json loader + whoami / session_info commands (Phase 2 C# side) ([6bd9296](https://github.com/fullya99/worldbox-mcp/commit/6bd92961b081d49c60fced2ff5df06f270779507))
+* **mod:** Introduce Session/Agent identity plumbing (Phase 1 of multi-agent v0.3) ([c6a83ae](https://github.com/fullya99/worldbox-mcp/commit/c6a83ae87aff23d838a22ecbb82b0d0ed11e2531))
+* **mod:** Split AdvanceTime permission so FactionPlayers can fast-forward ([3077e8b](https://github.com/fullya99/worldbox-mcp/commit/3077e8ba4afbe1e5c85414ad20ad022200ebce53))
+* **mod:** Wire permissions + faction binding + fog-of-war (Phase 3) ([88083ff](https://github.com/fullya99/worldbox-mcp/commit/88083ff9e9205ea156daca2927afd2d020497aad))
+* **server:** Switch to Authorization: Bearer + add whoami / session_info tools (Phase 2 Python) ([c1546fd](https://github.com/fullya99/worldbox-mcp/commit/c1546fda8559c5298a6795b7d4a990bcc4ac5441))
+
+
+### Bug Fixes
+
+* **ci:** Auto-enable GitHub Pages on first docs deploy ([3a8060d](https://github.com/fullya99/worldbox-mcp/commit/3a8060d82ca4d7a2e8110f568f372156d6e66db5))
+* **ci:** Exclude github issue forms from check-yaml + drop csharpier from pre-commit + simplify MCP self-check ([8546502](https://github.com/fullya99/worldbox-mcp/commit/8546502595aba1597f30d4fa5113a7662e65522c))
+* **ci:** Pass ruff/mypy/pre-commit on server + tolerate mod-build limitation ([dba154b](https://github.com/fullya99/worldbox-mcp/commit/dba154b102698a9ec2b5bc4b9fdf61c26a85596a))
+* **ci:** Unstick csharpier lint + mkdocs strict build (both pre-existing breakage) ([6bf983a](https://github.com/fullya99/worldbox-mcp/commit/6bf983a9ea62097560a29bf9930463b237312cb6))
+
+
+### Dependencies
+
+* Bump FluentAssertions from 6.12.1 to 6.12.2 ([#13](https://github.com/fullya99/worldbox-mcp/issues/13)) ([7fbf32e](https://github.com/fullya99/worldbox-mcp/commit/7fbf32e1e9985a786dc5d711bfaf3f8de77a8f98))
+* Bump HarmonyX from 2.10.2 to 2.16.1 ([#7](https://github.com/fullya99/worldbox-mcp/issues/7)) ([506bc65](https://github.com/fullya99/worldbox-mcp/commit/506bc6599895f458490aa363d7a289bceba3ea8d))
+* Bump Newtonsoft.Json from 13.0.3 to 13.0.4 ([#9](https://github.com/fullya99/worldbox-mcp/issues/9)) ([5cf0bdd](https://github.com/fullya99/worldbox-mcp/commit/5cf0bddd2256cac3c680e58e21189c94ebbc4373))
+* Bump xunit from 2.9.2 to 2.9.3 ([#10](https://github.com/fullya99/worldbox-mcp/issues/10)) ([562aea8](https://github.com/fullya99/worldbox-mcp/commit/562aea844ff5357e07724cba165d18075112eb27))
+
+
+### Documentation
+
+* Add CLAUDE.md (auto-loaded context for Claude Code sessions) + cross-ref from CONTRIBUTING ([acfcdb1](https://github.com/fullya99/worldbox-mcp/commit/acfcdb1f40e319be45101139b4e7027c714de55f))
+* **multi-agent:** Walkthrough + protocol + command-reference updates (Phase 7) ([194a419](https://github.com/fullya99/worldbox-mcp/commit/194a4194d6169350680410d390c9da9eb02fcb1d))
+* Refresh all .md to v0.3 — 26 tools, multi-agent, both auth headers ([b73dabb](https://github.com/fullya99/worldbox-mcp/commit/b73dabb78bfbf29ec21e05f838e4dfd318773184))
+
 ## [0.2.0](https://github.com/fullya99/worldbox-mcp/compare/v0.1.1...v0.2.0) (2026-05-16)
 
 

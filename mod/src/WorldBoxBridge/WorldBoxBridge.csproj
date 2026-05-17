@@ -5,7 +5,7 @@
     <AssemblyName>WorldBoxBridge</AssemblyName>
     <RootNamespace>WorldBoxBridge</RootNamespace>
     <!-- This is the SemVer source of truth, kept in sync by release-please. -->
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <AssemblyVersion>$(Version).0</AssemblyVersion>
     <FileVersion>$(Version).0</FileVersion>
     <InformationalVersion>$(Version)</InformationalVersion>
