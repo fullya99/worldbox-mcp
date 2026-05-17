@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file is maintained automatically by [release-please](https://github.com/googleapis/release-please)
 from Conventional Commits.
 
+## [0.3.1](https://github.com/fullya99/worldbox-mcp/compare/v0.3.0...v0.3.1) (2026-05-17)
+
+
+### Dependencies
+
+* Bump Microsoft.NET.Test.Sdk from 17.11.1 to 18.5.1 ([#8](https://github.com/fullya99/worldbox-mcp/issues/8)) ([9483cbd](https://github.com/fullya99/worldbox-mcp/commit/9483cbd3789492e486200f1c1657983088a03600))
+
 ## [0.3.0](https://github.com/fullya99/worldbox-mcp/compare/v0.2.0...v0.3.0) (2026-05-17)
 
 
