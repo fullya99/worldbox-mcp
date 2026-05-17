@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file is maintained automatically by [release-please](https://github.com/googleapis/release-please)
 from Conventional Commits.
 
+## [0.3.2](https://github.com/fullya99/worldbox-mcp/compare/v0.3.1...v0.3.2) (2026-05-17)
+
+
+### Documentation
+
+* Sync CLAUDE.md + project URLs to post-v0.3.1 state ([d3d6ac8](https://github.com/fullya99/worldbox-mcp/commit/d3d6ac807580682624c5247a45b6ba357f8de568))
+
 ## [0.3.1](https://github.com/fullya99/worldbox-mcp/compare/v0.3.0...v0.3.1) (2026-05-17)
 
 
