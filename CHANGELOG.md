@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file is maintained automatically by [release-please](https://github.com/googleapis/release-please)
 from Conventional Commits.
 
+## [0.3.3](https://github.com/fullya99/worldbox-mcp/compare/v0.3.2...v0.3.3) (2026-05-17)
+
+
+### Documentation
+
+* Revert site URLs back to fullya99.github.io (custom CNAME was dead) ([184c943](https://github.com/fullya99/worldbox-mcp/commit/184c94385dfdebd77ab872baacfc1450a21513b7))
+
 ## [0.3.2](https://github.com/fullya99/worldbox-mcp/compare/v0.3.1...v0.3.2) (2026-05-17)
 
 
