@@ -8,7 +8,7 @@
     <!-- BepInEx 5 (Mono, x64) -->
     <PackageVersion Include="BepInEx.Core"            Version="5.4.21" />
     <PackageVersion Include="BepInEx.PluginInfoProps" Version="2.1.0" />
-    <PackageVersion Include="HarmonyX"                Version="2.10.2" />
+    <PackageVersion Include="HarmonyX"                Version="2.16.1" />
 
     <!-- JSON: BepInEx bundles Newtonsoft.Json on Mono; pin a known-compatible version -->
     <PackageVersion Include="Newtonsoft.Json"         Version="13.0.3" />
