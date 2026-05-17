@@ -104,7 +104,7 @@ jobs:
         working-directory: mod
         run: dotnet build --configuration Release --no-restore -warnaserror
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: WorldBoxBridge-dll
           path: mod/src/WorldBoxBridge/bin/Release/net462/WorldBoxBridge.dll
@@ -130,7 +130,7 @@ jobs:
         run: dotnet test --configuration Release --no-restore --logger "trx;LogFileName=test-results.trx"
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mod-test-results
           path: mod/**/TestResults/*.trx
