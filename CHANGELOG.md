@@ -8,6 +8,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file is maintained automatically by [release-please](https://github.com/googleapis/release-please)
 from Conventional Commits.
 
+## [0.4.0](https://github.com/fullya99/worldbox-mcp/compare/v0.3.3...v0.4.0) (2026-09-05)
+
+
+### Features
+
+* **mod+server:** Detect, dismiss and suppress the startup window ([9e117f9](https://github.com/fullya99/worldbox-mcp/commit/9e117f95821a8f2f58b7785fa7b1af68fbf09fd1))
+* **mod+server:** Downscale screenshots and return them as MCP image blocks ([74f1f45](https://github.com/fullya99/worldbox-mcp/commit/74f1f455e50b454130c06b354ebebc8bfb996c56))
+* **mod+server:** List_speeds discovery tool and richer set_speed errors ([df400c0](https://github.com/fullya99/worldbox-mcp/commit/df400c0f5c0868c0ac29aa9a1bbff20b4fe9bcbb))
+* **mod:** Resolve save_world/load_world names under the game's saves directory ([30d387a](https://github.com/fullya99/worldbox-mcp/commit/30d387a36a9cd209901cd9095be067a133f18528))
+* **server:** Migrate to mcp 2.x MCPServer API ([14f9a24](https://github.com/fullya99/worldbox-mcp/commit/14f9a24f47b44d4ff9ed3feac8d0a20d5b5ed15d))
+
+
+### Bug Fixes
+
+* Build, install and run the mod correctly on macOS ([cb59764](https://github.com/fullya99/worldbox-mcp/commit/cb5976403a22cbfe94151c0538bd96601d179ef8))
+* **examples:** Request lossless PNG for the screenshots ecology_smoke writes ([f188f38](https://github.com/fullya99/worldbox-mcp/commit/f188f387a0b8547b9e358e2e3bff2156aee1eb6f))
+* **mod:** Destroy the downscaled texture when GPU readback fails ([a88ba1c](https://github.com/fullya99/worldbox-mcp/commit/a88ba1c897fc46f7a79402fc7c95637b19d6a31a))
+* **mod:** Drive click_power_action powers, reject input-dependent ones, guard save_world during loading ([3e2cd2d](https://github.com/fullya99/worldbox-mcp/commit/3e2cd2d8b17248f7ba30ba2ebf4b458b32c13c6a))
+* **mod:** Drop unused HarmonyX reference that broke plugin load ([1c2a3cf](https://github.com/fullya99/worldbox-mcp/commit/1c2a3cf1a6570380e24fe2df87fe1c388e4f3cf4))
+* **mod:** Keep UI reflection and startup-window suppression fail soft ([bb4ad9f](https://github.com/fullya99/worldbox-mcp/commit/bb4ad9fcd0a5a5034a0770afa484d1f559628d61))
+* **mod:** Log the real exception before rejecting a power as pointer-dependent ([c456e2c](https://github.com/fullya99/worldbox-mcp/commit/c456e2c12d5a505ad0bfdc2fc152b3fc7cdd67e6))
+* **mod:** Pin Newtonsoft.Json to the game's bundled 13.0.2 ([a7682c8](https://github.com/fullya99/worldbox-mcp/commit/a7682c8c94aaf7eb07b08499b46c15ac260c6a70))
+* **server:** Surface bridge errors to the model as ToolError with did_you_mean ([4c4bc6d](https://github.com/fullya99/worldbox-mcp/commit/4c4bc6d6ad0b66838be719ed5b911bf2d7ea83ba))
+
+
+### Dependencies
+
+* **server:** Refresh Python lockfile ([a98bb28](https://github.com/fullya99/worldbox-mcp/commit/a98bb28928831bfe57aab1552f10d54b610a1cca))
+
 ## [0.3.3](https://github.com/fullya99/worldbox-mcp/compare/v0.3.2...v0.3.3) (2026-05-17)
 
 
