@@ -151,3 +151,26 @@ def test_spelling(number: int, spelled: str) -> None:
 def test_spelling_refuses_what_it_cannot_write() -> None:
     with pytest.raises(ValueError, match="extend spell"):
         gen_docs.spell(100)
+
+
+def test_unclosed_region_is_reported(surface: object, docs: Path) -> None:
+    index = docs / "docs/index.md"
+    index.write_text(index.read_text().replace("<!-- gen-docs:end total -->", ""), encoding="utf-8")
+
+    report = gen_docs.run(surface, docs, write=False)
+
+    assert any("begin marker(s) but" in p for p in report.problems)
+
+
+def test_mismatched_end_marker_is_reported(surface: object, docs: Path) -> None:
+    index = docs / "docs/index.md"
+    index.write_text(
+        index.read_text().replace(
+            "<!-- gen-docs:end bridge-commands -->", "<!-- gen-docs:end total -->"
+        ),
+        encoding="utf-8",
+    )
+
+    report = gen_docs.run(surface, docs, write=False)
+
+    assert any("begin marker(s) but" in p for p in report.problems)

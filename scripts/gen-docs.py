@@ -208,7 +208,16 @@ def sync_regions(surface: Surface, root: Path, *, write: bool, report: Report) -
                 stale.append(f"{name}: '{match.group('body')}' should be '{wanted}'")
             return f"{match.group('open')}{wanted}{match.group('close')}"
 
-        updated = REGION.sub(replace, text)
+        updated, matched = REGION.subn(replace, text)
+        # A begin marker whose end is missing, or misspelt, matches nothing. Without this the
+        # region would be skipped in silence, which is the failure mode the script exists to
+        # prevent.
+        opened = text.count("<!-- gen-docs:begin ")
+        if matched != opened:
+            report.fail(
+                f"{rel}: {opened} begin marker(s) but {matched} complete region(s). One is "
+                f"unclosed or its end marker names a different region."
+            )
         if not stale:
             continue
         if write:
