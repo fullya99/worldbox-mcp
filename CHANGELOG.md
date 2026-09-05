@@ -8,6 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file is maintained automatically by [release-please](https://github.com/googleapis/release-please)
 from Conventional Commits.
 
+## [0.6.0](https://github.com/fullya99/worldbox-mcp/compare/v0.5.0...v0.6.0) (2026-09-05)
+
+
+### Features
+
+* **mod+server:** Drive brush and toggle delegates; radius, pulses and drag for invoke_power ([4613d73](https://github.com/fullya99/worldbox-mcp/commit/4613d73517ba516bbe88f58a0b19a6c3bf891a98))
+
+
+### Bug Fixes
+
+* Harden multi-frame pulse runs and list_powers per adversarial review ([1a62c0e](https://github.com/fullya99/worldbox-mcp/commit/1a62c0e2b36d781b92c5a7b573ae8c092cc8cee0))
+* **mod:** Read the save off the main thread so load_world cannot freeze the game ([a2334f3](https://github.com/fullya99/worldbox-mcp/commit/a2334f33d3884c18a4384c7e3a60b25ea2a08fe6))
+* **mod:** Refuse a pipe before opening it, and pin the reader's untested paths ([d447ab1](https://github.com/fullya99/worldbox-mcp/commit/d447ab167d0f2dadf98cdfac80812fee14acddc6))
+* **mod:** Warn when the game's brush id disagrees, and correct the threading note ([9f4096f](https://github.com/fullya99/worldbox-mcp/commit/9f4096f2aace5b1cf3589116a307bee03a9b92da))
+
+
+### Refactors
+
+* **mod:** Drop the kingdom guard nothing called, and say what a claim scopes ([c9abd5b](https://github.com/fullya99/worldbox-mcp/commit/c9abd5b5f8a58fd8e607a8e23de5b848f5ad1870))
+
 ## [0.5.0](https://github.com/fullya99/worldbox-mcp/compare/v0.4.0...v0.5.0) (2026-09-05)
 
 
