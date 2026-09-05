@@ -3,6 +3,6 @@
 from __future__ import annotations
 
 # Tracked by release-please, see release-please-config.json. Don't edit by hand.
-__version__ = "0.4.0"  # x-release-please-version
+__version__ = "0.5.0"  # x-release-please-version
 
 __all__ = ["__version__"]

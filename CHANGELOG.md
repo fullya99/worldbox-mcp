@@ -8,6 +8,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file is maintained automatically by [release-please](https://github.com/googleapis/release-please)
 from Conventional Commits.
 
+## [0.5.0](https://github.com/fullya99/worldbox-mcp/compare/v0.4.0...v0.5.0) (2026-09-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* **mod:** agents with the FactionPlayer role can no longer call invoke_power and receive PERMISSION_DENIED. Use spawn for creature placement, or run the agent as God.
+
+### Features
+
+* **mod:** Let any agent dismiss a blocking window in turn_based mode ([733bcf7](https://github.com/fullya99/worldbox-mcp/commit/733bcf735f70e1a819f46259f1ee45daf71f3931))
+* **mod:** Let any agent dismiss a blocking window in turn_based mode ([e6f7af8](https://github.com/fullya99/worldbox-mcp/commit/e6f7af869ac4b6682fef45132f8bd1159e8d27a4))
+
+
+### Bug Fixes
+
+* **ci:** Make the compat check actually detect WorldBox updates ([f2d4f4f](https://github.com/fullya99/worldbox-mcp/commit/f2d4f4fcea29802b439901ff18d4ad7b3889fd5b))
+* **ci:** Make the compat check actually detect WorldBox updates ([6295ccb](https://github.com/fullya99/worldbox-mcp/commit/6295ccbcb7253e266b36c0a41d117d94641eae59))
+* **mod:** Close the drive-relative hole in the save path rules ([521475d](https://github.com/fullya99/worldbox-mcp/commit/521475d5c54fcc5966905cdf7a4eee2d020cc940))
+* **mod:** Decide save-path containment by resolving, not by shape ([a26ac03](https://github.com/fullya99/worldbox-mcp/commit/a26ac03c4860b5b97ce99135feaf0c5fecfa98d9))
+* **mod:** Gate invoke_power on the global action scope ([16ed7cf](https://github.com/fullya99/worldbox-mcp/commit/16ed7cfffdd2b1dce8285077abb05b199bea1f76))
+* **mod:** Raise BAD_ARGS from the commands instead of catching a base type ([d835136](https://github.com/fullya99/worldbox-mcp/commit/d83513607ca5d201dd33a88d841229f55b802621))
+* **mod:** Report a bad argument as BAD_ARGS, not as a game crash ([75b9cee](https://github.com/fullya99/worldbox-mcp/commit/75b9cee4f6e36f6836d6798208dd5362b2f18329))
+* **mod:** Report the source load_world actually read ([042f041](https://github.com/fullya99/worldbox-mcp/commit/042f041c1babe7f6224ed56dbf51fe826b0bdb3d))
+
+
+### Performance
+
+* **mod:** Stop paying for work the frame does not need ([10b4580](https://github.com/fullya99/worldbox-mcp/commit/10b45809195a388857e9e50f12154f42371c4b84))
+
+
+### Dependencies
+
+* Bump xunit.runner.visualstudio from 3.1.5 to 4.0.0 ([10c0e01](https://github.com/fullya99/worldbox-mcp/commit/10c0e0148895a2a15f0ce4d9e7fe65e9324bdd3d))
+
+
+### Refactors
+
+* **mod:** Give the UI layer an interface seam and test its branches ([7d9223f](https://github.com/fullya99/worldbox-mcp/commit/7d9223fa9231fdfcd6623ca0099c0fc5c88613c5))
+* **mod:** One reader for the active simulation speed ([5cae2d9](https://github.com/fullya99/worldbox-mcp/commit/5cae2d9b390a39bcbfd5995a2c15a3472b82a789))
+
+
+### Chores
+
+* Cut 0.5.0 rather than 1.0.0 ([fb3d4cd](https://github.com/fullya99/worldbox-mcp/commit/fb3d4cdf2e49f527b09f58336f0850b2043cf98a))
+
 ## [0.4.0](https://github.com/fullya99/worldbox-mcp/compare/v0.3.3...v0.4.0) (2026-09-05)
 
 
