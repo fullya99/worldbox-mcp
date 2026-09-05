@@ -21,7 +21,7 @@ git: en
   HTTP API on `127.0.0.1:8723` and reaching game internals purely through reflection.
 - **`server/`**, a Python 3.11+ MCP server on PyPI that proxies tool calls to that API.
 
-29 tools across six categories. A multi-agent session layer (roles, permissions, fog of war, turn
+<!-- gen-docs:begin total -->29<!-- gen-docs:end total --> tools across six categories. A multi-agent session layer (roles, permissions, fog of war, turn
 order, message bus) activates when `BepInEx/config/WorldBoxBridge.agents.json` exists, otherwise
 the bridge runs single-tenant.
 

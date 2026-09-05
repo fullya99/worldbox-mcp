@@ -66,7 +66,7 @@ worldbox-mcp/
 
 ### Counting the tool surface
 
-29 MCP tools, which is 28 registered `ICommand` implementations plus the `/capabilities`
+<!-- gen-docs:begin total -->29<!-- gen-docs:end total --> MCP tools, which is <!-- gen-docs:begin bridge-commands -->28<!-- gen-docs:end bridge-commands --> registered `ICommand` implementations plus the `/capabilities`
 endpoint. File count and command count differ because `PauseCommand.cs` declares two commands,
 `pause` and `resume`. [command-reference.md](command-reference.md) is the reference list, and
 every stated count elsewhere should agree with it.

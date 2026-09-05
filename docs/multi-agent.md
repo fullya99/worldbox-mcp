@@ -13,11 +13,11 @@ bearer token, role, optional kingdom claim, and inbox. Every command that modifi
 observes the world receives a `RequestContext` carrying that identity, so the bridge can
 gate actions and scope reads per agent.
 
-## Twenty-nine MCP tools, six categories
+## <!-- gen-docs:begin total-words -->Twenty-nine<!-- gen-docs:end total-words --> MCP tools, six categories
 
 v0.3 added **six new tools** on top of the v0.2 set, and the existing twenty stay
 backwards-compatible. v0.4 adds three more (`list_speeds`, `get_ui_state`, `dismiss_window`).
-Total surface = 29.
+Total surface = <!-- gen-docs:begin total -->29<!-- gen-docs:end total -->.
 
 | Category | Tools | New in v0.3 |
 |---|---|---|

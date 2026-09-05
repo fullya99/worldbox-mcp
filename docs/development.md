@@ -122,6 +122,43 @@ These need:
 
 CI skips this suite by default.
 
+### Keeping the documented tool surface honest
+
+The tool count is stated in six files, and it has drifted three times. `scripts/gen-docs.py`
+makes that impossible. It imports the MCP server in-process, asks it which tools are
+registered, counts the commands the mod declares, and compares both against the docs. No game
+and no network are involved, so it runs anywhere the server installs.
+
+```bash
+cd server
+uv run python ../scripts/gen-docs.py --check   # what CI runs
+uv run python ../scripts/gen-docs.py --write   # refresh the generated regions
+```
+
+Two mechanisms, on purpose:
+
+- **Generated regions.** Counts live between markers and `--write` rewrites them:
+  `<!-- gen-docs:begin total -->29<!-- gen-docs:end total -->`. Three regions exist, `total`,
+  `total-words` for the spelled-out headings, and `bridge-commands` for the C# side. Prose
+  outside the markers is never touched, which is how the per-version asset counts, the
+  argument columns and the error model survive. The count in
+  [compatibility.md](compatibility.md) is deliberately left alone: that row records what a
+  released version shipped and must not move when the surface grows.
+- **Inventory checks.** The category tables carry editorial columns, so rewriting them would
+  cost more than it saves. They are verified instead. `README.md`, `index.md`,
+  `multi-agent.md` and `command-reference.md` must each name every registered tool, and any
+  `worldbox_`-prefixed identifier anywhere in the docs must resolve to a real tool. An
+  identifier that looks like a tool without being one, a payload field for instance, goes in
+  the script's `NOT_A_TOOL` set. That includes examples: naming a tool that does not exist
+  fails the check, which is the point.
+
+It also cross-checks the two sides of the bridge. The mod declares one command fewer than the
+server exposes tools, because `/capabilities` is served by the HTTP layer rather than by an
+`ICommand`. Any other gap means a tool was added on one side only.
+
+The script itself is covered by `server/tests/unit/test_gen_docs.py`, which drives it against
+a throwaway tree. A check that stays quiet when the docs drift would be worse than no check.
+
 ## Adding a new MCP tool
 
 1. **Mod side**, `mod/src/WorldBoxBridge/Commands/<Category>/<Name>Command.cs`:
@@ -146,8 +183,11 @@ CI skips this suite by default.
    the model reads to decide when to call your tool, so be concrete about inputs, outputs and
    edge cases.
 4. **Update [command-reference.md](command-reference.md)**, and [multi-agent.md](multi-agent.md)
-   if the tool is session-aware. Keep every stated tool count in agreement.
-5. Build, deploy and smoke-test against a running game.
+   if the tool is session-aware. Add it to the category table in `README.md` and
+   `docs/index.md` too, they are checked for completeness.
+5. **Run `uv run python ../scripts/gen-docs.py --write` from `server/`**, which refreshes every
+   stated count. Then `--check`, and fix whatever it still reports. CI runs the same check.
+6. Build, deploy and smoke-test against a running game.
 
 ## When something breaks
 

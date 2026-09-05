@@ -4,7 +4,7 @@ title: Command reference
 
 # Command reference
 
-29 MCP tools, grouped by six categories. Asset ids (tile / actor / power / speed) come
+<!-- gen-docs:begin total -->29<!-- gen-docs:end total --> MCP tools, grouped by six categories. Asset ids (tile / actor / power / speed) come
 from the running game's registry, call the discovery tools to enumerate them; never
 hardcode. The v0.3 multi-agent additions (Meta `whoami` / `session_info` /
 `turn_advance` / `objective_status`, plus the Bus category) only carry meaningful payload

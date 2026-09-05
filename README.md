@@ -11,7 +11,7 @@
 
 `worldbox-mcp` is a two-piece bridge that lets any [MCP](https://modelcontextprotocol.io)-compatible AI client (Claude Code, OpenCode, Codex, Cursor, Continue, ...) directly control the live game [WorldBox](https://www.superworldbox.com/).
 
-**29 MCP tools** spanning discovery, action, observation, simulation control, multi-agent identity, and an inter-agent message bus. The agent observes the world, chooses what to do, acts on it, then observes the outcome, a full agentic loop running against an actual running game. Since v0.3, multiple AI agents can share the same world simultaneously with role-based permissions, fog-of-war, turn-taking, and direct messaging. See [`docs/multi-agent.md`](docs/multi-agent.md).
+**<!-- gen-docs:begin total -->29<!-- gen-docs:end total --> MCP tools** spanning discovery, action, observation, simulation control, multi-agent identity, and an inter-agent message bus. The agent observes the world, chooses what to do, acts on it, then observes the outcome, a full agentic loop running against an actual running game. Since v0.3, multiple AI agents can share the same world simultaneously with role-based permissions, fog-of-war, turn-taking, and direct messaging. See [`docs/multi-agent.md`](docs/multi-agent.md).
 
 ---
 
@@ -154,7 +154,7 @@ In your agent client:
 Or paste the full god-mode ecology prompt from [`examples/prompts/godmode-ecology.md`](examples/prompts/godmode-ecology.md) to exercise every tool category in one go.
 
 
-## The 29 tools
+## The <!-- gen-docs:begin total -->29<!-- gen-docs:end total --> tools
 
 | Category | Tools | What for |
 |---|---|---|

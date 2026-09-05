@@ -22,7 +22,7 @@ It ships as two open-source components:
 - 🧩 **[Compatibility](compatibility.md)**, WorldBox × mod version matrix
 - 🤝 **[Contributing](contributing.md)**, code, docs, issues
 
-## Twenty-nine tools across six categories
+## <!-- gen-docs:begin total-words -->Twenty-nine<!-- gen-docs:end total-words --> tools across six categories
 
 | Category | Tools |
 |---|---|

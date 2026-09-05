@@ -146,6 +146,11 @@ jobs:
         # the same invocation as the dev sanity check.
         working-directory: server
         run: uv run worldbox-mcp --self-check --no-bridge-required
+      - name: Docs match the registered tool surface
+        # Fails when a count, an inventory table or the C#/Python command parity drifts.
+        # `--write` refreshes the generated regions locally.
+        working-directory: server
+        run: uv run --frozen python ../scripts/gen-docs.py --check
 
   pre-commit:
     name: Pre-commit
