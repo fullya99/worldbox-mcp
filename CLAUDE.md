@@ -31,8 +31,9 @@ the bridge runs single-tenant.
   CI attaches by itself. Not yet verified against a live game, and neither was `v0.5.0`, so two
   releases stand on static evidence alone, see [compatibility](docs/compatibility.md).
 - **`main` is ahead of it by a feature**, so what PyPI serves is not what the tree does. 0.7.0
-  waits in release-please's PR with the two concurrency bounds of #68. Whoever cuts it makes a
-  third release on static evidence unless the live pass happens first.
+  waits in release-please's PR with the two concurrency bounds of #68 and the backstop fix #70
+  that made the first one safe. Whoever cuts it makes a third release on static evidence unless
+  the live pass happens first.
 - **Breaking in 0.5.0**: a `FactionPlayer` agent can no longer call `invoke_power` and gets
   `PERMISSION_DENIED`. God powers are map-wide, so they carry the same gate as `paint_tile`.
   Creature placement stays available through `spawn`.
