@@ -56,12 +56,25 @@ internal sealed class HttpBridge : IDisposable
     private static readonly TimeSpan ReadTimeout = TimeSpan.FromSeconds(35);
 
     /// <summary>
-    /// How long a request waits for a free slot before it is told the bridge is busy. Long
-    /// enough that a burst of short commands queues through it unnoticed, short enough that a
-    /// caller stuck behind a wedged <c>load_world</c> gets an answer well inside its own HTTP
-    /// timeout instead of a dead socket.
+    /// How long a request waits for a free slot before it is told the bridge is busy.
     /// </summary>
-    private static readonly TimeSpan AdmissionTimeout = TimeSpan.FromSeconds(5);
+    /// <remarks>
+    /// The number comes from arithmetic, not taste. The Python client allows 35s per call and
+    /// the dispatcher's queueing deadline is 30s, so the wait here is what is left of the
+    /// client's headroom: at 5s a request that then times out on the main thread answered at
+    /// 35s and the client reported the bridge unreachable instead of showing the
+    /// <c>MAIN_THREAD_TIMEOUT</c> it had just been sent. 2s keeps 3s of margin, and buys the
+    /// same thing 5s did, since a burst of short commands drains in milliseconds and anything
+    /// stuck behind a 25s pulse run was never going to be admitted either way.
+    /// </remarks>
+    private static readonly TimeSpan AdmissionTimeout = TimeSpan.FromSeconds(2);
+
+    /// <summary>
+    /// Deadline the handler holds over a command once it has started, whichever thread it
+    /// started on. Long enough to be a backstop and not a policy: every command that means to
+    /// take time bounds itself well inside it.
+    /// </summary>
+    private static readonly TimeSpan CommandBackstop = TimeSpan.FromSeconds(60);
     private const int MaxHeaderBytes = 16 * 1024;
     private const int MaxBodyBytes = 4 * 1024 * 1024;
 
@@ -504,9 +517,13 @@ internal sealed class HttpBridge : IDisposable
         // chooses rather than one the client does. It sits here rather than around the whole
         // connection for two reasons: unauthenticated traffic must not be able to spend the
         // slots, and a client that dribbles its request in or reads its response slowly must not
-        // hold one it is not using. Awaited outside the try below so that a cancellation on
-        // shutdown reaches HandleClientAsync, which knows it is not an error, instead of being
-        // labelled a game crash.
+        // hold one it is not using. What that second reason does NOT do is bound the socket. The
+        // ReceiveTimeout set in HandleClientAsync only applies to synchronous socket calls, and
+        // the bridge reads with ReadAsync, so a client that sends half a request line and stops
+        // parks in ReadHeadersAsync with no deadline. It costs a socket and a pool thread, which
+        // the accept loop still does not cap, it just no longer costs a slot. TODOS carries that
+        // one. Awaited outside the try below so a cancellation on shutdown reaches
+        // HandleClientAsync, which knows it is not an error.
         var admitted = await _inFlight
             .TryEnterAsync(AdmissionTimeout, cancellationToken)
             .ConfigureAwait(false);
@@ -516,15 +533,20 @@ internal sealed class HttpBridge : IDisposable
                 $"refused '{name}': {_inFlight.Capacity} requests already in flight and none "
                     + $"freed up within {AdmissionTimeout.TotalSeconds:F0}s."
             );
+            // No `args` on this one. Every other error echoes them back to help the caller see
+            // what it sent, but this is the load-shedding path: a refused `load_world` carrying
+            // 4 MB of base64 would be serialized into the response, so refusing a request to
+            // save memory would cost several more copies of the largest payload accepted.
             return ErrorResponse(
                 503,
                 "Service Unavailable",
                 ErrorCode.Busy,
                 $"The bridge is already running {_inFlight.Capacity} commands and none finished "
-                    + $"within {AdmissionTimeout.TotalSeconds:F0}s. Retry, or raise "
-                    + "max_concurrent_requests in WorldBoxBridge.cfg.",
-                commandName: name,
-                args: args
+                    + $"within {AdmissionTimeout.TotalSeconds:F0}s. Retry. Raising "
+                    + "max_concurrent_requests in WorldBoxBridge.cfg lifts this particular "
+                    + "limit, though a command that registers a per-frame job has a second one "
+                    + "that config does not reach.",
+                commandName: name
             );
         }
 
@@ -558,56 +580,69 @@ internal sealed class HttpBridge : IDisposable
             // Capture ctx in locals so the closure passed to MainThreadDispatcher captures the
             // struct by value (instance is small; struct copies dodge a closure-allocation surprise).
             var capturedCtx = ctx;
-            object? result;
+            Task<object?> commandTask;
             if (command.RequiresMainThread)
             {
                 // Two awaits, deliberately: the dispatcher call starts ExecuteAsync on the main
-                // thread; the command's own task is then awaited HERE, off the main thread.
+                // thread; the command's own task is then awaited BELOW, off the main thread.
                 // Blocking on it inside the dispatched callback (GetResult) would deadlock any
                 // command whose task completes on a later frame, invoke_power's multi-pulse
                 // path returns exactly such a task, completed by subsequent dispatcher ticks.
-                var commandTask = await MainThreadDispatcher
+                commandTask = await MainThreadDispatcher
                     .RunOnMainThreadAsync(
                         () => command.ExecuteAsync(args, capturedCtx, cancellationToken),
                         cancellationToken: cancellationToken
                     )
                     .ConfigureAwait(false);
-                // Bound the second await too: a multi-frame command self-limits via its
-                // dispatcher job deadline, but that invariant lives in the command, this
-                // backstop keeps a future misbehaving command from parking the handler forever.
-                // The linked CTS is cancelled on the normal path so the 60s timer (and its
-                // registration on the long-lived shutdown token) is released immediately
-                // rather than lingering per request.
-                using var backstopCts = CancellationTokenSource.CreateLinkedTokenSource(
-                    cancellationToken
-                );
-                var backstop = Task.Delay(TimeSpan.FromSeconds(60), backstopCts.Token);
-                var finished = await Task.WhenAny(commandTask, backstop).ConfigureAwait(false);
-                if (finished != commandTask)
-                {
-                    // Observe the abandoned task's eventual fault so it can never surface as
-                    // an UnobservedTaskException.
-                    _ = commandTask.ContinueWith(
-                        static t => _ = t.Exception,
-                        CancellationToken.None,
-                        TaskContinuationOptions.OnlyOnFaulted
-                            | TaskContinuationOptions.ExecuteSynchronously,
-                        TaskScheduler.Default
-                    );
-                    throw new TimeoutException(
-                        "Command task did not complete within 60s of starting on the main thread."
-                    );
-                }
-                backstopCts.Cancel();
-                result = await commandTask.ConfigureAwait(false);
             }
             else
             {
-                result = await command
-                    .ExecuteAsync(args, ctx, cancellationToken)
-                    .ConfigureAwait(false);
+                // Task.Run, and not the plain call this used to be, because the body of a
+                // command that reports false runs synchronously up to its first await, and
+                // `load_world` reads the whole save in that stretch. Called inline, a read that
+                // never returns parks THIS thread before the backstop below exists, so the
+                // admission slot is never given back and eight of them take the bridge out
+                // entirely. Handing the body to another pool thread is what lets a deadline
+                // sit over it. This is not the ConfigureAwait/Task.Run trap CLAUDE.md warns
+                // about: that one is about main-thread commands escaping the dispatcher, and
+                // this branch is the one that never wanted a frame in the first place.
+                commandTask = Task.Run(
+                    () => command.ExecuteAsync(args, capturedCtx, cancellationToken),
+                    cancellationToken
+                );
             }
-            return SuccessResponse(result);
+
+            // One backstop over both branches. A multi-frame command self-limits via its
+            // dispatcher job deadline and a pool-thread command has no deadline at all, so
+            // neither invariant lives here: this keeps a command that parks forever from
+            // holding its admission slot for the life of the process. It does not unblock the
+            // thread underneath, nothing in net462 can, it only stops one wedged call from
+            // costing every later caller. The linked CTS is cancelled on the normal path so
+            // the timer, and its registration on the long-lived shutdown token, is released
+            // per request rather than lingering.
+            using var backstopCts = CancellationTokenSource.CreateLinkedTokenSource(
+                cancellationToken
+            );
+            var backstop = Task.Delay(CommandBackstop, backstopCts.Token);
+            var finished = await Task.WhenAny(commandTask, backstop).ConfigureAwait(false);
+            if (finished != commandTask)
+            {
+                // Observe the abandoned task's eventual fault so it can never surface as
+                // an UnobservedTaskException.
+                _ = commandTask.ContinueWith(
+                    static t => _ = t.Exception,
+                    CancellationToken.None,
+                    TaskContinuationOptions.OnlyOnFaulted
+                        | TaskContinuationOptions.ExecuteSynchronously,
+                    TaskScheduler.Default
+                );
+                throw new TimeoutException(
+                    $"Command task did not complete within {CommandBackstop.TotalSeconds:F0}s "
+                        + "of starting."
+                );
+            }
+            backstopCts.Cancel();
+            return SuccessResponse(await commandTask.ConfigureAwait(false));
         }
         catch (TimeoutException tex)
         {
@@ -646,6 +681,11 @@ internal sealed class HttpBridge : IDisposable
                 ErrorCode.PermissionDenied => 403,
                 ErrorCode.FactionScopeViolation => 403,
                 ErrorCode.TurnNotYours => 409,
+                // Present so the one code with two producers cannot disagree with itself: the
+                // dispatcher raises BUSY through its own exception type below, and a command
+                // that ever raises it through this path would otherwise arrive as a 500 that
+                // docs/protocol.md documents as a 503.
+                ErrorCode.Busy => 503,
                 _ => 500,
             };
             return ErrorResponse(
@@ -657,6 +697,14 @@ internal sealed class HttpBridge : IDisposable
                 args: args,
                 didYouMean: brex.DidYouMean
             );
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // Shutdown reached the command, usually through the dispatcher cancelling its TCS.
+            // Rethrown rather than answered: HandleClientAsync knows this is not an error, and
+            // without this filter the catch-all below claims it and tells the caller the game
+            // crashed. The finally still runs, so the slot goes back either way.
+            throw;
         }
         catch (Exception ex)
         {
@@ -672,6 +720,10 @@ internal sealed class HttpBridge : IDisposable
         }
         finally
         {
+            // Every path out of the try has to reach this, including a future early return added
+            // above it. A slot that is taken and never given back is invisible until the eighth
+            // one, at which point the bridge answers BUSY to everything and looks saturated by
+            // load rather than by a leak.
             _inFlight.Exit();
         }
     }

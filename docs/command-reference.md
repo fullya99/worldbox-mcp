@@ -124,7 +124,7 @@ Every error response follows this shape:
 | `MAIN_THREAD_TIMEOUT` | A command waited more than 30s for a Unity frame and was dropped before it ran. The deadline is checked before the action starts, so it never abandons work already under way. |
 | `UNAUTHORIZED` | Missing or wrong bearer credential (either `Authorization: Bearer <token>` or the legacy `X-WB-Token: <token>`). Should never happen if `worldbox-mcp` auto-discovered your config. |
 | `DISABLED` | `enabled = false` in `BepInEx/config/WorldBoxBridge.cfg`. The kill-switch is engaged. |
-| `BUSY` | The bridge already runs as many commands at once as it admits (`max_concurrent_requests`, default 8), or the dispatcher's per-frame job registry is full. Nothing reached the world, so the call is safe to repeat. HTTP 503, see [protocol.md](protocol.md#concurrency-limit). |
+| `BUSY` | The bridge already runs as many commands at once as it admits (`max_concurrent_requests`, default 8), or the dispatcher's per-frame job registry is full. Safe to repeat: refused at admission nothing ran, and the one thing a job-registry refusal can have done already is clone a brush asset, which is keyed by name. HTTP 503, see [protocol.md](protocol.md#concurrency-limit). |
 
 ---
 
