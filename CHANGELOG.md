@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file is maintained automatically by [release-please](https://github.com/googleapis/release-please)
 from Conventional Commits.
 
+## [0.7.0](https://github.com/fullya99/worldbox-mcp/compare/v0.6.0...v0.7.0) (2026-09-06)
+
+
+### Features
+
+* **mod:** Bound in-flight commands and per-frame jobs ([6f4854e](https://github.com/fullya99/worldbox-mcp/commit/6f4854e349b03aa20d6dd4558f7f9d66f326f215))
+
+
+### Bug Fixes
+
+* **docs:** Stop the install pages showing a mod_version from a broken release ([4b22909](https://github.com/fullya99/worldbox-mcp/commit/4b2290942d664fcd1e1880629a444c74fd3b0b84))
+* **mod:** Hold the backstop over both dispatch branches ([a93de58](https://github.com/fullya99/worldbox-mcp/commit/a93de585e43c5b40bf5e104aa6588e5e040a0474))
+
 ## [0.6.0](https://github.com/fullya99/worldbox-mcp/compare/v0.5.0...v0.6.0) (2026-09-05)
 
 

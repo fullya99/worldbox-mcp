@@ -14,5 +14,5 @@ internal static class PluginInfo
     /// edit by hand; commit with Conventional Commits and the next release PR will bump
     /// this in sync with WorldBoxBridge.csproj's &lt;Version&gt; and pyproject.toml.
     /// </summary>
-    public const string Version = "0.6.0"; // x-release-please-version
+    public const string Version = "0.7.0"; // x-release-please-version
 }
