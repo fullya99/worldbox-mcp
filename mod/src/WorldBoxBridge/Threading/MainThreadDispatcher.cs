@@ -71,8 +71,16 @@ public static class MainThreadDispatcher
     /// <summary>
     /// Admission for <see cref="RunPerFrameOnMainThreadAsync{T}"/>. Taken on the registering
     /// thread and returned in <see cref="Tick"/>, on the main thread, where the job leaves
-    /// <see cref="ActiveJobs"/>. That is the only exit a job has, so the count cannot drift.
+    /// <see cref="ActiveJobs"/>.
     /// </summary>
+    /// <remarks>
+    /// That removal is a job's only exit, so the count does not drift while the tick runs. It
+    /// does drift if the tick stops, which happens if another plugin resets the PlayerLoop and
+    /// drops our subsystem: registration keeps taking slots that nothing gives back, and after
+    /// 32 jobs every further one is refused. Worth knowing rather than guarding, because a
+    /// dispatcher that no longer ticks has already broken every main-thread command, and this
+    /// gate is not where that would be noticed.
+    /// </remarks>
     private static readonly ConcurrencyGate JobSlots = new(MaxActiveJobs);
 
     /// <summary>
@@ -281,12 +289,36 @@ public static class MainThreadDispatcher
         {
             ActiveJobs.Add(newJob);
         }
+        // Guarded like the action drain below, which this loop was not before it started
+        // returning slots. Two things here can throw and they want different answers, so they
+        // are caught separately: a job that cannot even report is dropped and still gives its
+        // slot back, while a slot that refuses to come back is logged and goes no further. An
+        // exception escaping this loop would skip the remaining jobs AND the whole action drain
+        // for the frame, which stalls the bridge rather than degrading one command.
         for (var i = ActiveJobs.Count - 1; i >= 0; i--)
         {
-            if (!ActiveJobs[i].RunStep())
+            bool finished;
+            try
             {
-                ActiveJobs.RemoveAt(i);
+                finished = !ActiveJobs[i].RunStep();
+            }
+            catch (Exception ex)
+            {
+                _log?.LogError($"Dispatcher caught an exception stepping a per-frame job: {ex}");
+                finished = true;
+            }
+            if (!finished)
+            {
+                continue;
+            }
+            ActiveJobs.RemoveAt(i);
+            try
+            {
                 JobSlots.Exit();
+            }
+            catch (Exception ex)
+            {
+                _log?.LogError($"Per-frame job slot accounting is off: {ex}");
             }
         }
 

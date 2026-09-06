@@ -38,16 +38,28 @@ public class ConcurrencyGateTests
     }
 
     [Fact]
-    public void Available_tracks_the_slots_that_are_out()
+    public void Every_exit_hands_back_exactly_one_slot()
     {
         var gate = new ConcurrencyGate(2);
-        gate.Available.Should().Be(2);
-        gate.TryEnter();
-        gate.Available.Should().Be(1);
-        gate.TryEnter();
-        gate.Available.Should().Be(0);
+        gate.TryEnter().Should().BeTrue();
+        gate.TryEnter().Should().BeTrue();
+        gate.TryEnter().Should().BeFalse();
+
         gate.Exit();
-        gate.Available.Should().Be(1);
+
+        gate.TryEnter().Should().BeTrue();
+        gate.TryEnter().Should().BeFalse();
+    }
+
+    [Fact]
+    public void An_exit_without_a_matching_entry_throws()
+    {
+        // Pinned deliberately. An unmatched Exit means the accounting is already wrong, and a
+        // gate that grew past its capacity would be a bound that stopped bounding. The callers
+        // that run on Unity's main thread catch this rather than let it reach the frame loop.
+        var gate = new ConcurrencyGate(1);
+
+        FluentActions.Invoking(() => gate.Exit()).Should().Throw<SemaphoreFullException>();
     }
 
     [Fact]
@@ -110,16 +122,17 @@ public class ConcurrencyGateTests
         var gate = new ConcurrencyGate(capacity);
         var inside = 0;
         var peak = 0;
-        var refused = 0;
 
         var runs = new Task[callers];
         for (var i = 0; i < callers; i++)
         {
             runs[i] = Task.Run(async () =>
             {
+                // A refusal is not asserted against. Whether 64 pool work items all clear a 2s
+                // window is a statement about the runner's scheduling, not about the gate, and
+                // this suite has no other test that depends on wall-clock timing.
                 if (!await gate.TryEnterAsync(Generous, CancellationToken.None))
                 {
-                    Interlocked.Increment(ref refused);
                     return;
                 }
                 try
@@ -147,7 +160,12 @@ public class ConcurrencyGateTests
         await Task.WhenAll(runs);
 
         peak.Should().BeLessThanOrEqualTo(capacity);
-        refused.Should().Be(0, "short work under a generous timeout should all get through");
-        gate.Available.Should().Be(capacity);
+        // Every slot came back: the gate is full, so one more entry beyond capacity is refused
+        // and exactly capacity of them succeed.
+        for (var i = 0; i < capacity; i++)
+        {
+            gate.TryEnter().Should().BeTrue();
+        }
+        gate.TryEnter().Should().BeFalse();
     }
 }

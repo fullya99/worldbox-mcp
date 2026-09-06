@@ -120,7 +120,7 @@ Content-Type: application/json
 | `MAIN_THREAD_TIMEOUT` | 504 | Command waited more than 30s for a Unity frame and was dropped before it ran. The deadline is checked before the action starts, so it never abandons work already in progress. |
 | `UNAUTHORIZED` | 401 | Missing or wrong bearer credential. |
 | `DISABLED` | 503 | `enabled = false` in `WorldBoxBridge.cfg`. The kill-switch is active. |
-| `BUSY` | 503 | The bridge already runs as many commands at once as it admits, or the dispatcher's per-frame job registry is full. Nothing broke and nothing reached the world, so the call is safe to repeat. See [Concurrency limit](#concurrency-limit). |
+| `BUSY` | 503 | The bridge already runs as many commands at once as it admits, or the dispatcher's per-frame job registry is full. Nothing broke, and the call is safe to repeat. Refused at admission it changed nothing at all; refused by the job registry, an `invoke_power` carrying a `radius` has already cloned its brush asset, which is idempotent by name. See [Concurrency limit](#concurrency-limit). |
 | `PERMISSION_DENIED` _(v0.3+)_ | 403 | The agent's role lacks the permission this command needs. |
 | `FACTION_SCOPE_VIOLATION` _(v0.3+)_ | 403 | Reserved, currently never raised. A kingdom claim scopes reads, not writes, see [multi-agent.md](multi-agent.md#a-kingdom-claim-scopes-reads-not-writes). |
 | `TURN_NOT_YOURS` _(v0.3+)_ | 409 | Turn-based mode is active and another agent holds the current slot. |
@@ -155,8 +155,8 @@ Edit `<worldbox>/BepInEx/config/WorldBoxBridge.cfg` and set `enabled = false`. T
 ## Concurrency limit
 
 The bridge runs a bounded number of commands at once. A request that arrives with every slot
-taken waits five seconds for one to free up, then gets `503 BUSY` rather than joining a queue
-with no end: a command in flight can hold an entire save file in memory, and `invoke_power` with
+taken waits two seconds for one to free up, then gets `503 BUSY` rather than joining a queue with
+no end: a command in flight can hold an entire save file in memory, and `invoke_power` with
 `pulses` keeps its slot for up to 25 seconds.
 
 ```ini
@@ -164,13 +164,18 @@ with no end: a command in flight can hold an entire save file in memory, and `in
 max_concurrent_requests = 8
 ```
 
-Accepted values run from 1 to 64. Unlike `enabled`, this one is read once at startup, so a change
-needs a game restart.
+Accepted values run from 1 to 32. Unlike `enabled`, this one is read once at startup, so a change
+needs a game restart. The two-second wait is arithmetic: the Python client allows 35s per call and
+the dispatcher's queueing deadline is 30s, so a longer wait would push a genuine
+`MAIN_THREAD_TIMEOUT` past the client's own deadline and the caller would be told the bridge was
+unreachable instead of being shown the error it was sent.
 
 A second bound sits behind it, on the dispatcher rather than on the socket: at most 32 per-frame
 jobs may be registered at once, the same number of queued actions the dispatcher drains per
 frame. Only `invoke_power` with `pulses` registers one today. Filling that registry also answers
-`503 BUSY`, with a message that names the registry rather than the request cap.
+`503 BUSY`, with a message that names the registry rather than the request cap. That is also why
+`max_concurrent_requests` stops at 32, so raising it never carries a caller past a second limit
+no configuration reaches.
 
 Authentication runs before admission, so a flood of bad tokens cannot spend the slots, and
 `GET /capabilities` is never gated because it reads no game state. `GET /health` is gated like

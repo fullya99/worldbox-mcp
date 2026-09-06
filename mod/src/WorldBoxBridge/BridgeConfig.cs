@@ -64,7 +64,11 @@ internal sealed class BridgeConfig
                     + "queued, because a request in flight can hold a whole save file in "
                     + "memory. Read once at startup, so a change here needs a game restart, "
                     + "unlike 'enabled'.",
-                new AcceptableValueRange<int>(1, 64)
+                // Capped at 32 to match MainThreadDispatcher's per-frame job cap. Allowing more
+                // would let an operator raise this past a second limit that no configuration
+                // reaches, so raising it would stop helping exactly for invoke_power with
+                // pulses, the command most likely to be running many at once.
+                new AcceptableValueRange<int>(1, 32)
             )
         );
 

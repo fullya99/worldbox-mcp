@@ -83,7 +83,9 @@ cd mod
 dotnet test
 ```
 
-The mod test suite (xUnit) covers the suggester, the agent registry, the request-context permission/fog-of-war helpers, the turn-order rotation (incl. concurrency), and the message bus (delivery, broadcast fan-out, cursoring, bounded-inbox drop-oldest), **without the game**. The pattern is "linked sources": pure-logic files from the mod project are referenced as `<Compile Include="..\..\src\..." Link="..." />` in the test csproj so they compile under net8 without Unity. Anything that genuinely needs WorldBox to be running lives in the server-side e2e suite instead.
+The mod test suite (xUnit) runs **without the game**. The pattern is "linked sources": pure-logic files from the mod project are referenced as `<Compile Include="..\..\src\..." Link="..." />` in the test csproj so they compile under net8 without Unity. That block is the inventory of what is covered, 26 files behind 15 test classes, so read it rather than a list here. This sentence used to carry such a list and it named five of those fifteen, which is the same way every hand-kept count in this repo has gone.
+
+What the pattern asks of a new class is one thing: no Unity and no BepInEx type anywhere in it. `SavePathResolver` and `ConcurrencyGate` are the shape to copy, and the second is why `MainThreadDispatcher` holds its per-frame job cap in a separate small class rather than inline. Anything that genuinely needs WorldBox to be running lives in the server-side e2e suite instead.
 
 ### Decompiling the game
 

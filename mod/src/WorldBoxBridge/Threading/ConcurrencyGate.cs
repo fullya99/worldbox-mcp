@@ -39,9 +39,6 @@ internal sealed class ConcurrencyGate
     /// <summary>Slots this gate hands out. Always at least one.</summary>
     public int Capacity { get; }
 
-    /// <summary>Slots free right now. Sampled without a lock, so only ever a hint.</summary>
-    public int Available => _slots.CurrentCount;
-
     /// <summary>
     /// Takes a slot, waiting up to <paramref name="timeout"/> for one to free up. Returns false
     /// when the gate stayed full for that long, and the caller must not call <see cref="Exit"/>
@@ -59,6 +56,13 @@ internal sealed class ConcurrencyGate
     }
 
     /// <summary>Returns a slot taken by a successful <see cref="TryEnter"/> or entry.</summary>
+    /// <remarks>
+    /// Throws <see cref="SemaphoreFullException"/> when called without a matching entry, and
+    /// that is on purpose: an unmatched Exit means the accounting is already wrong, and a gate
+    /// that quietly grew past its capacity is a bound that has stopped bounding. Callers on the
+    /// main thread catch it rather than let it reach Unity, see <c>MainThreadDispatcher.Tick</c>.
+    /// A test pins the behaviour so a future second removal path fails there instead.
+    /// </remarks>
     public void Exit()
     {
         _slots.Release();
