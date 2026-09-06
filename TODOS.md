@@ -5,12 +5,13 @@
 
 ## 🔄 Pick up here, 2026-09-06, closing the fourth session of 2026-09-05
 
-**Where things stand**: `main` is at `b5d82a2` and **`v0.6.0` is the released version**.
+**Where things stand**: `main` is at `8aad68c` and **`v0.6.0` is the released version**.
 PyPI serves it and the GitHub release carries `WorldBoxBridge-v0.6.0.zip` with its `.sha256`.
-#68 landed on top of it and 0.7.0 is now sitting in release-please's PR, unreleased. 223 xUnit
-and 84 pytest are green here, `gen-docs.py --check` is clean, and the tool count is still 29.
+#68 and #70 landed on top of it and 0.7.0 is now sitting in release-please's PR, unreleased. 224
+xUnit and 84 pytest are green here, `gen-docs.py --check` is clean, and the tool count is still
+29.
 
-**#68 was the work of this session**, and it closed the last Debt item that needed no running
+**#68 was the substance of this session**, and it closed the last Debt item that needed no running
 game. Two counted bounds over one `ConcurrencyGate`: an admission gate in
 `HttpBridge.ExecuteCommandAsync` capped by `max_concurrent_requests` (default 8), and a cap of 32
 registered per-frame jobs in `MainThreadDispatcher`, the same number of queued actions it already
@@ -18,7 +19,7 @@ drained per frame. Both refuse with the new `503 BUSY`. Its description carries 
 arguments in full, and the section below repeats the short form. Only half the in-flight Debt
 item closed, see the entry, which now states the residual instead of ticking the box.
 
-**#70 exists because a code review took #68 apart**, and it is worth reading before touching any
+**#70 landed because a code review took #68 apart**, and it is worth reading before touching any
 of this. #68 shipped the handler's 60-second backstop on the main-thread branch only, while
 `load_world` reports `RequiresMainThread => false` and does its whole file read before its first
 `await`. So a wedged read held its admission slot for the life of the process, and the eighth one
