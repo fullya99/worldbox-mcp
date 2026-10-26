@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           ref: ${{ needs.release-please.outputs.tag_name }}
-      - uses: astral-sh/setup-uv@v10.0.1
+      - uses: astral-sh/setup-uv@v10.3.2
       - run: uv python install 3.12
       - name: Build wheel + sdist
         working-directory: server
